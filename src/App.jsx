@@ -1,10 +1,12 @@
-
+import { Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
 
 
   return (
-    <h1>hola</h1>
+    <Routes>
+      <Route path="/" element={<h1>PhysiFlix</h1>} />
+    </Routes>
   )
 }
 
