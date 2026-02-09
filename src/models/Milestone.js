@@ -3,10 +3,10 @@
 import { ScientificEntity } from "./ScientificEntity";
 
 export class Milestone extends ScientificEntity {
-    constructor(data, year) {
+    constructor(data, timeLabel) {
         super(data);
-        this.year = year;
-        this.relatedScientifics = [];
+        this.timeLabel = timeLabel;
+        this.relatedScientists = [];
     }
 
 }

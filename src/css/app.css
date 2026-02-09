@@ -1,0 +1,592 @@
+/* ============================================
+   PhysiFlix - CSS completo (Layout tipo VSCode)
+   - 3 paneles fijos: Sidebar (izq) / Resultados (centro) / Detalle (der)
+   - Sin scroll global: cada panel tiene su propio scroll
+   - Proporción: Sidebar fijo + (Resultados y Detalle) ocupan todo el resto
+   - Colores y estilos incluidos
+============================================ */
+
+/* =========================
+   Variables + Base
+========================= */
+:root {
+    --bg: #0b1220;
+    --panel: rgba(255, 255, 255, 0.06);
+    --panel-2: rgba(255, 255, 255, 0.10);
+    --text: rgba(255, 255, 255, 0.92);
+    --muted: rgba(255, 255, 255, 0.65);
+    --border: rgba(255, 255, 255, 0.14);
+    --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    --radius: 16px;
+    --gap: 12px;
+    --focus: 0 0 0 3px rgba(56, 189, 248, 0.35);
+
+    /* ancho base del panel de filtros */
+    --sidebar-w: 320px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    color: var(--text);
+    background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(56, 189, 248, 0.20), transparent 55%),
+        radial-gradient(900px 500px at 90% 0%, rgba(167, 139, 250, 0.18), transparent 55%),
+        var(--bg);
+
+    overflow: hidden;
+    /* clave: sin scroll global en desktop */
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    color: rgba(56, 189, 248, 0.95);
+}
+
+a:hover {
+    color: rgba(56, 189, 248, 1);
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+/*Welcome*/
+.welcome {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Vídeo de fondo */
+.welcome-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    /* CLAVE */
+    object-position: center;
+    /* CLAVE */
+
+    z-index: 0;
+}
+
+/* Capa de contraste */
+.welcome-overlay {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+        radial-gradient(900px 500px at 50% 30%,
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.75));
+
+    display: grid;
+    place-items: center;
+}
+
+/* Contenido */
+.welcome-content {
+    text-align: center;
+    padding: 32px;
+    max-width: 720px;
+}
+
+.welcome-title {
+    margin: 0 0 12px;
+    font-size: 48px;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.welcome-subtitle {
+    margin: 0 0 22px;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Botón */
+.welcome-button {
+    display: inline-block;
+    padding: 14px 20px;
+    border-radius: 14px;
+
+    background: linear-gradient(180deg,
+            rgba(56, 189, 248, 0.35),
+            rgba(56, 189, 248, 0.15));
+
+    border: 1px solid rgba(56, 189, 248, 0.5);
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.welcome-button:hover {
+    background: linear-gradient(180deg,
+            rgba(56, 189, 248, 0.45),
+            rgba(56, 189, 248, 0.2));
+}
+
+
+
+/* =========================
+   Layout principal (3 paneles)
+========================= */
+
+.explore-layout {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+
+    display: grid;
+    gap: var(--gap);
+
+    /* Sidebar fijo + 2 columnas que se reparten TODO el resto */
+    grid-template-columns: var(--sidebar-w) 1fr 1fr;
+
+    /* si quieres mínimo “3x sidebar” en cada panel, descomenta:
+  grid-template-columns:
+    var(--sidebar-w)
+    minmax(calc(var(--sidebar-w) * 3), 1fr)
+    minmax(calc(var(--sidebar-w) * 3), 1fr);
+  */
+
+    overflow: hidden;
+}
+
+/* en tu JSX Timeline e InfoPanel están dentro de <main class="explore-main">,
+   así que subimos esos hijos al grid padre sin tocar React */
+.explore-main {
+    display: contents;
+}
+
+/* IMPORTANTÍSIMO en CSS Grid: permite que las columnas se ajusten
+   sin provocar overflow lateral */
+.sidebar,
+.timeline,
+.info {
+    min-width: 0;
+}
+
+/* =========================
+   Panel Sidebar (izquierda)
+========================= */
+
+.sidebar {
+    height: 100%;
+    overflow: auto;
+
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--panel), rgba(255, 255, 255, 0.03));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+
+    padding: 16px;
+}
+
+.sidebar__form {
+    display: grid;
+    gap: 14px;
+}
+
+.sidebar__field {
+    display: grid;
+    gap: 8px;
+}
+
+.sidebar__label {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.sidebar__select,
+.sidebar__input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(10, 15, 28, 0.55);
+    color: var(--text);
+    outline: none;
+}
+
+.sidebar__select:focus,
+.sidebar__input:focus {
+    box-shadow: var(--focus);
+    border-color: rgba(56, 189, 248, 0.55);
+}
+
+.sidebar__field--checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar__checkboxLabel {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    user-select: none;
+    color: var(--text);
+}
+
+.sidebar__checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: rgba(56, 189, 248, 0.95);
+}
+
+.sidebar__button {
+    margin-top: 4px;
+    padding: 11px 14px;
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.20), rgba(56, 189, 248, 0.10));
+    color: var(--text);
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform .08s ease, background .15s ease, border-color .15s ease;
+}
+
+.sidebar__button:hover {
+    border-color: rgba(56, 189, 248, 0.55);
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.26), rgba(56, 189, 248, 0.12));
+}
+
+.sidebar__button:active {
+    transform: translateY(1px);
+}
+
+.sidebar__button:focus {
+    outline: none;
+    box-shadow: var(--focus);
+}
+
+/* =========================
+   Panel Resultados (centro)
+========================= */
+
+.timeline {
+    height: 100%;
+    overflow: auto;
+    /* scroll propio */
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--panel), rgba(255, 255, 255, 0.03));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow-x: hidden;
+    /* nunca scroll lateral */
+}
+
+.timeline__header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    background: linear-gradient(180deg, rgba(11, 18, 32, 0.92), rgba(11, 18, 32, 0.70));
+    backdrop-filter: blur(8px);
+    z-index: 2;
+}
+
+.timeline__title {
+    margin: 0;
+    font-size: 16px;
+    letter-spacing: 0.2px;
+}
+
+.timeline__count {
+    font-size: 12px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 10px;
+    border-radius: 999px;
+}
+
+.timeline__status {
+    margin: 0;
+    padding: 16px;
+    color: var(--muted);
+}
+
+.timeline__status--error {
+    color: rgba(248, 113, 113, 0.95);
+}
+
+/* Grid: 3 columnas en desktop */
+.timeline__list {
+    padding: 16px;
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+}
+
+/* =========================
+   Milestone Card
+========================= */
+
+.milestoneCard {
+    text-align: left;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0;
+    transition: transform .10s ease, border-color .15s ease, background .15s ease;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+}
+
+.milestoneCard:hover {
+    transform: translateY(-2px);
+    border-color: rgba(56, 189, 248, 0.35);
+    background: rgba(255, 255, 255, 0.055);
+}
+
+.milestoneCard:focus {
+    outline: none;
+    box-shadow: var(--focus);
+    border-color: rgba(56, 189, 248, 0.55);
+}
+
+.milestoneCard__img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.milestoneCard__title {
+    margin: 12px 12px 8px;
+    font-size: 15px;
+    line-height: 1.25;
+}
+
+.milestoneCard__summary {
+    margin: 0 12px 14px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--muted);
+}
+
+/* =========================
+   Panel Detalle (derecha)
+========================= */
+
+.info {
+    height: 100%;
+    overflow: auto;
+    /* scroll propio */
+    overflow-x: hidden;
+
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--panel), rgba(255, 255, 255, 0.03));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+}
+
+.info h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+}
+
+.info h3 {
+    margin: 14px 0 10px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.info p {
+    margin: 10px 0;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.info img {
+    width: 100%;
+    max-width: 520px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.info hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 14px 0;
+}
+
+.info__empty {
+    margin: 0;
+    color: var(--muted);
+}
+
+.info__people {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.info__personBtn {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+.info__personBtn:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+    background: rgba(255, 255, 255, 0.055);
+}
+
+.info__personBtn:focus {
+    outline: none;
+    box-shadow: var(--focus);
+    border-color: rgba(56, 189, 248, 0.55);
+}
+
+.info__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(15, 23, 42, 0.35);
+    color: rgba(255, 255, 255, 0.92);
+    padding: 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+.info__back:hover {
+    border-color: rgba(56, 189, 248, 0.55);
+}
+
+.info__status {
+    margin: 8px 0 10px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 14px;
+}
+
+.info__status--error {
+    color: rgba(248, 113, 113, 0.95);
+}
+
+
+/* =========================
+   Scrollbar styling (Timeline + Info + Sidebar)
+   - Chrome/Edge/Safari: ::-webkit-scrollbar
+   - Firefox: scrollbar-width / scrollbar-color
+========================= */
+
+/* Firefox */
+.timeline,
+.info,
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.22) rgba(255, 255, 255, 0.06);
+}
+
+/* WebKit (Chrome/Edge/Safari) */
+.timeline::-webkit-scrollbar,
+.info::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar {
+    width: 10px;
+}
+
+.timeline::-webkit-scrollbar-track,
+.info::-webkit-scrollbar-track,
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
+    border-left: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.timeline::-webkit-scrollbar-thumb,
+.info::-webkit-scrollbar-thumb,
+.sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg,
+            rgba(56, 189, 248, 0.35),
+            rgba(167, 139, 250, 0.28));
+    border-radius: 999px;
+    border: 2px solid rgba(11, 18, 32, 0.55);
+    /* “se integra” con el panel */
+}
+
+.timeline::-webkit-scrollbar-thumb:hover,
+.info::-webkit-scrollbar-thumb:hover,
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg,
+            rgba(56, 189, 248, 0.48),
+            rgba(167, 139, 250, 0.38));
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1200px) {
+    :root {
+        --sidebar-w: 280px;
+    }
+
+    .timeline__list {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 820px) {
+    body {
+        overflow: auto;
+    }
+
+    .explore-layout {
+        height: auto;
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar,
+    .timeline,
+    .info {
+        height: auto;
+        overflow: visible;
+    }
+
+    .timeline__list {
+        grid-template-columns: 1fr;
+    }
+}

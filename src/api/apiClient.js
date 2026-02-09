@@ -27,7 +27,6 @@ export async function connect(params = {}, options = {}) {
         }
 
         const data = await response.json();
-        console.log(`Datos obtenidos: ${data}`);
         return data;
     } catch (err) {
         throw new Error(`Error de conexión: ${err.message}`);
